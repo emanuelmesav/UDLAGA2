@@ -10,6 +10,7 @@ class Ship:
         self.length = 10
         self.direction = "RIGHT"
         self.status = "ALIVE"
+        
         self.bullets= []
         
     
@@ -27,7 +28,12 @@ class Ship:
         self.status = "DEAD"
         
     def fire(self):
-        self.bullets.append(Bullet(self.x_pos, 0, 5, (0, 0, 0), "UP"))
+        self.bullets.append(Bullet(self.x_pos, self.y_pos))
+                
+        #Check if the bullet is out of the screen
+        for bullet in self.bullets:
+            if bullet.y < 0:
+                self.bullets.remove(bullet)
 
 
     

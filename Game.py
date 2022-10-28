@@ -12,6 +12,7 @@ class Game:
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.clock = pygame.time.Clock()
         self.fps= fps    
+        self.time_between_shots = 0
         
         # Load the sprite sheet        
         try:
@@ -21,9 +22,15 @@ class Game:
             pygame.quit()
             return
         
-        # Show the ship from the sprite sheet            
-        self.shipSprite= self.loadSprite(288, 172, 16, 16)
+        # Select the ship from the sprite sheet            
+        self.shipSprite= self.loadSprite(289, 172, 16, 16)
         self.shipSprite = pygame.transform.scale(self.shipSprite, (32, 32))
+        
+        #Select the bullet from the sprite sheet
+        self.bulletSprite = self.loadSprite(313, 140, 3, 8)
+        
+        
+        
         
         self.myShip = Ship()
         self.myShip.y_pos= self.height - 42
@@ -31,13 +38,15 @@ class Game:
         self.mySky= Sky(self.width, self.height)
     
     def run(self):
+        
+        
         pygame.init()
         while True:
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    return
+            #Update time between shots                             
+            
+            self.time_between_shots += 1
+            print(self.time_between_shots)
+            
             # Clear the screen
             self.screen.fill((0, 0, 0))
             
@@ -52,6 +61,14 @@ class Game:
             
             # Add the ship to the screen
             self.screen.blit(self.shipSprite, (self.myShip.x_pos, self.myShip.y_pos))
+            
+            #Display the bullets
+            for bullet in self.myShip.bullets:
+                self.screen.blit(self.bulletSprite, (bullet.x, bullet.y))
+                bullet.move()
+            
+            
+            
             # Update display
             
             pygame.display.flip()
@@ -70,19 +87,30 @@ class Game:
     
     
     def checkKeys(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
         keys = pygame.key.get_pressed()
+        
         if keys[pygame.K_LEFT]:
             self.myShip.direction = "LEFT"
             self.myShip.move()
-        elif keys[pygame.K_RIGHT]:
+        
+        if keys[pygame.K_RIGHT]:
             self.myShip.direction = "RIGHT"
             self.myShip.move()
-        elif keys[pygame.K_q]:
+        
+        if keys[pygame.K_q]:
             self.fps += 5
-        elif keys[pygame.K_a]:
+        if keys[pygame.K_a]:
             self.fps -= 5
-        elif keys[pygame.K_SPACE]:
-            self.myShip.fire()
+        
+        if keys[pygame.K_SPACE]:
+            #Check if enough time has passed since the last shot
+            if self.time_between_shots > 30:
+                self.myShip.fire()
+                self.time_between_shots = 0
             
     #Load a sprite from the sprite sheet in a rectangle
     def loadSprite(self, x, y, width, height):
