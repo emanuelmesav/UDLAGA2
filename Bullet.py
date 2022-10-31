@@ -7,8 +7,12 @@ class Bullet:
             self.x = x    
             self.y = y
             self.vel = 8
+
+            self.direction="UP"
     
         
         def move(self):
-            
-            self.y -= self.vel
+            if self.direction =="UP":
+                self.y -=self.vel
+            elif self.direction=="DOWN":
+                self.y +=self.vel   

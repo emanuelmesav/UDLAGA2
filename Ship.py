@@ -20,7 +20,6 @@ class Ship:
             self.x_pos += 1
         elif self.direction == "LEFT":
             self.x_pos -= 1
-    
     def hit(self):
         self.hits += 1
         
@@ -32,8 +31,8 @@ class Ship:
                 
         #Check if the bullet is out of the screen
         for bullet in self.bullets:
-            if bullet.y < 0:
-                self.bullets.remove(bullet)
+            if bullet.y <= 0:
+                bullet.direction='DOWN'
 
 
     
